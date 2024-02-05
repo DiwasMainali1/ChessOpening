@@ -1,0 +1,42 @@
+/*brown color - #b58863*/
+/*cream color - #f0d9b5*/
+body {
+    background: #161513;
+}
+
+h1 {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #cccccc;
+    text-align: center;
+}
+.square {
+    background-color: #E9EDCC;
+    width: 70px;
+    height: 70px;
+}
+.the-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5rem;
+}
+.main-container {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    height: 560px;
+    width: 560px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.files:nth-of-type(odd) .square:nth-of-type(even){
+    background-color: #779954;
+}
+
+.files:nth-of-type(even) .square:nth-of-type(odd){
+    background-color: #779954;
+}
+
+img {
+    width: 100%;
+}
