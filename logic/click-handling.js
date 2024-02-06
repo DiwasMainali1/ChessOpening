@@ -3,48 +3,73 @@ var isClicked = false;
 
 const clickedElements = [];
 const pawnElements = [];
+const prevSquare = [];
 for(const i of allSquares) {
     i.addEventListener("click", function() {
         if(clickedElements.length > 0) {
             clickedElements[0].removeAttribute("style");
         }
+        const poppedElement = clickedElements.pop();
         if(pawnElements.length > 0) {
-            pawnElements[0].removeAttribute("style");
-            pawnElements[1].removeAttribute("style");
+            document.getElementById(pawnElements[0]).removeAttribute("style");
+            document.getElementById(pawnElements[1]).removeAttribute("style");
         }
         const idOfElement = i.getAttribute("id");
-        const innerHTMLOfEl = document.getElementById(idOfElement).innerHTML;
+        const innerHTMLOfEl = i.innerHTML;
         const images = this.getElementsByTagName("img");
         if(
             (innerHTMLOfEl.includes("black") ||
-            innerHTMLOfEl.includes("white")) && i !== clickedElements.pop()) {
-                document.getElementById(idOfElement).style.backgroundColor = '#BBCC43';
+            innerHTMLOfEl.includes("white")) && i !== poppedElement) {
+                i.style.backgroundColor = '#BBCC43';
                 clickedElements.push(i);
+        } else {
+            if(pawnElements.includes(idOfElement)) {
+                const initialSquare = document.getElementById(prevSquare[0]);
+                const targetSquare = document.getElementById(idOfElement);
+                const pawn = initialSquare.querySelector("img");
+                console.log("This is working?")
+                if(pawn) {
+                    targetSquare.appendChild(pawn);
+                }
+            }
         }
         for(const img of images) {
             if(img.src.includes("pawn")) {
                 console.log(idOfElement, "Pawn!");
-                pawnMoves(idOfElement, pawnElements);            
+                firstpawnMoves(idOfElement, pawnElements);            
+            } else {
+                pawnElements.pop();
+                pawnElements.pop();
             }
         }
         console.log(pawnElements.length, "pawn length");
-
+        prevSquare.pop();
+        prevSquare.push(idOfElement);
     });
 }
 
-function pawnMoves(elementId, pawnElements) {
+function firstpawnMoves(elementId, pawnElements) {
     const lastElement = pawnElements.pop();
     const secondLastElement = pawnElements.pop();
-    if (elementId.includes("7") && document.getElementById(elementId[0] + "5") !== lastElement && document.getElementById(elementId[0] + "6") !== secondLastElement) {
-        const firstMove = document.getElementById(elementId[0] + "6");
-        const secondMove = document.getElementById(elementId[0] + "5");
-        
+
+    const file = elementId[0];
+    const rank = elementId[1];
+    let moveOne, moveTwo;
+
+    if(rank === "7") {
+        moveOne = "6";
+        moveTwo = "5";
+    } else if(rank == "2") {
+        moveOne = "3";
+        moveTwo = "4";
+    } //else {
+
+    //}
+    if(moveOne && moveTwo && (file + moveTwo) !== lastElement && (file + moveOne) !== secondLastElement) {
+        const firstMove = document.getElementById(file + moveOne);
+        const secondMove = document.getElementById(file + moveTwo); 
         firstMove.style.backgroundColor = "yellow";
-        firstMove.style.border = "0.1px solid black";
-        firstMove.style.boxSizing = "border-box";
         secondMove.style.backgroundColor = "yellow";
-        secondMove.style.border = "0.1px solid black";
-        secondMove.style.boxSizing = "border-box";
-        pawnElements.push(firstMove, secondMove);
+        pawnElements.push(firstMove.id, secondMove.id);
     }
 };
