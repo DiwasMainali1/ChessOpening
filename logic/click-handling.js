@@ -11,8 +11,8 @@ for(const i of allSquares) {
         }
         const poppedElement = clickedElements.pop();
         if(pawnElements.length > 0) {
-            document.getElementById(pawnElements[0]).removeAttribute("style");
-            document.getElementById(pawnElements[1]).removeAttribute("style");
+            document.querySelector(`#${pawnElements[0]} .dot`).remove();
+            document.querySelector(`#${pawnElements[1]} .dot`).remove();
         }
         const idOfElement = i.getAttribute("id");
         const innerHTMLOfEl = i.innerHTML;
@@ -48,6 +48,12 @@ for(const i of allSquares) {
     });
 }
 
+function addDot(targetElement) {
+    var span = document.createElement('span');
+    span.className = 'dot';
+    targetElement.appendChild(span);
+}
+
 function firstpawnMoves(elementId, pawnElements) {
     const lastElement = pawnElements.pop();
     const secondLastElement = pawnElements.pop();
@@ -68,8 +74,8 @@ function firstpawnMoves(elementId, pawnElements) {
     if(moveOne && moveTwo && (file + moveTwo) !== lastElement && (file + moveOne) !== secondLastElement) {
         const firstMove = document.getElementById(file + moveOne);
         const secondMove = document.getElementById(file + moveTwo); 
-        firstMove.style.backgroundColor = "yellow";
-        secondMove.style.backgroundColor = "yellow";
+        addDot(firstMove);
+        addDot(secondMove);
         pawnElements.push(firstMove.id, secondMove.id);
     }
 };

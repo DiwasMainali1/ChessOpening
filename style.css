@@ -13,6 +13,9 @@ h1 {
     background-color: #E9EDCC;
     width: 70px;
     height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .the-container {
     display: flex;
@@ -40,3 +43,15 @@ h1 {
 img {
     width: 100%;
 }
+
+.dot {
+    height: 22px;
+    width: 22px;
+    background-color: #000000;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.1;
+  }
+  
