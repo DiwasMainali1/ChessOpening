@@ -1,5 +1,4 @@
 const allSquares = document.getElementsByClassName("square");
-var isClicked = false;
 
 const clickedElements = [];
 const pawnElements = [];
@@ -11,8 +10,8 @@ for(const i of allSquares) {
         }
         const poppedElement = clickedElements.pop();
         if(pawnElements.length > 0) {
-            document.querySelector(`#${pawnElements[0]} .dot`).remove();
-            document.querySelector(`#${pawnElements[1]} .dot`).remove();
+            document.querySelector(`#${pawnElements[0]} .dot`)?.remove();
+            document.querySelector(`#${pawnElements[1]} .dot`)?.remove();
         }
         const idOfElement = i.getAttribute("id");
         const innerHTMLOfEl = i.innerHTML;
@@ -23,26 +22,17 @@ for(const i of allSquares) {
                 i.style.backgroundColor = '#BBCC43';
                 clickedElements.push(i);
         } else {
-            if(pawnElements.includes(idOfElement)) {
-                const initialSquare = document.getElementById(prevSquare[0]);
-                const targetSquare = document.getElementById(idOfElement);
-                const pawn = initialSquare.querySelector("img");
-                console.log("This is working?")
-                if(pawn) {
-                    targetSquare.appendChild(pawn);
-                }
-            }
+            movePawn(idOfElement, prevSquare, pawnElements);
         }
         for(const img of images) {
             if(img.src.includes("pawn")) {
                 console.log(idOfElement, "Pawn!");
-                firstpawnMoves(idOfElement, pawnElements);            
+                pawnMoves(idOfElement, pawnElements);            
             } else {
                 pawnElements.pop();
                 pawnElements.pop();
             }
         }
-        console.log(pawnElements.length, "pawn length");
         prevSquare.pop();
         prevSquare.push(idOfElement);
     });
@@ -54,10 +44,11 @@ function addDot(targetElement) {
     targetElement.appendChild(span);
 }
 
-function firstpawnMoves(elementId, pawnElements) {
-    const lastElement = pawnElements.pop();
-    const secondLastElement = pawnElements.pop();
+function pawnMoves(elementId, pawnElements) {
+    console.log(pawnElements.length, "pawn Element length");
+    pawn = document.getElementById(elementId);
 
+    console.log(pawn.innerHTML);
     const file = elementId[0];
     const rank = elementId[1];
     let moveOne, moveTwo;
@@ -68,9 +59,21 @@ function firstpawnMoves(elementId, pawnElements) {
     } else if(rank == "2") {
         moveOne = "3";
         moveTwo = "4";
-    } //else {
-
-    //}
+    } else {
+        if(pawn.innerHTML.includes("black")) {
+            moveOne = (parseInt("rank") - 1).toString();
+            const onlyMove = document.getElementById(file + moveOne);
+            addDot(onlyMove);
+            pawnElements.push(onlyMove.id);
+        } else {
+            moveOne = (parseInt("rank") + 1).toString();
+            const onlyMove = document.getElementById(file + moveOne);
+            addDot(onlyMove);
+            pawnElements.push(onlyMove.id);
+        }
+    }
+    const lastElement = pawnElements.pop();
+    const secondLastElement = pawnElements.pop();
     if(moveOne && moveTwo && (file + moveTwo) !== lastElement && (file + moveOne) !== secondLastElement) {
         const firstMove = document.getElementById(file + moveOne);
         const secondMove = document.getElementById(file + moveTwo); 
@@ -79,3 +82,15 @@ function firstpawnMoves(elementId, pawnElements) {
         pawnElements.push(firstMove.id, secondMove.id);
     }
 };
+
+function movePawn(idOfElement, prevSquare, pawnElements) {
+    if(pawnElements.includes(idOfElement)) {
+        const initialSquare = document.getElementById(prevSquare[0]);
+        const targetSquare = document.getElementById(idOfElement);
+        const pawn = initialSquare.querySelector("img");
+        console.log("This is working?")
+        if(pawn) {
+            targetSquare.appendChild(pawn);
+        }
+    }
+}

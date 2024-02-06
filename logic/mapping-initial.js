@@ -1,4 +1,4 @@
-// storing files / columns into arrays
+// storing files / ranks into arrays
 
 const arrayOfFiles = document.querySelectorAll(".files");
 
