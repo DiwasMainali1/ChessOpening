@@ -6,36 +6,61 @@ const prevSquare = [];
 
 for(const i of allSquares) {
     i.addEventListener("click", function() {
-        if(clickedElements.length > 0) {
-            clickedElements[0].removeAttribute("style");
-        }
-        const poppedElement = clickedElements.pop();
-        if(pawnElements.length > 0) {
-            document.querySelector(`#${pawnElements[0]} .dot`)?.remove();
-            document.querySelector(`#${pawnElements[1]} .dot`)?.remove();
-        }
+        //Initialisation
         const idOfElement = i.getAttribute("id");
         const innerHTMLOfEl = i.innerHTML;
         const images = this.getElementsByTagName("img");
-        if(
-            (innerHTMLOfEl.includes("black") ||
-            innerHTMLOfEl.includes("white")) && i !== poppedElement) {
-                i.style.backgroundColor = '#BBCC43';
-                clickedElements.push(i);
-        } 
+
+        //Removing highlighted squares if there is one
+        const poppedElement = removeClickedEl(clickedElements);
+        //Removing highlighted possible pawn squares
+        removePawnEl(pawnElements);
+
+        //If pieces are selected then adding highlight
+        setHighlightColor(i, clickedElements, innerHTMLOfEl, poppedElement);
+        
+        //moving the pawn if the selected rank and file is correct
         movePawn(idOfElement, prevSquare, pawnElements);
-        for(const img of images) {
-            if(img.src.includes("pawn")) {
-                console.log(idOfElement, "Pawn!");
-                pawnMoves(idOfElement, pawnElements, clickedElements);            
-            } else {
-                pawnElements.pop();
-                pawnElements.pop();
-            }
-        }
+        
+        //adding highlights to possible pawn moves if pawn is clicked
+        pawnClick(images, idOfElement, pawnElements, clickedElements);
+
+        //Chaning the prev square to curr square popping and pushing
         prevSquare.pop();
         prevSquare.push(idOfElement);
     });
+}
+
+function pawnClick(images, id, pawnElements, clickedElements) {
+    for(const img of images) {
+        if(img.src.includes("pawn")) {
+            pawnMoves(id, pawnElements, clickedElements);            
+        } else {
+            pawnElements.pop();
+            pawnElements.pop();
+        }
+    }
+}
+
+function setHighlightColor(element, clickedElement, color, poppedElement) {
+    if(color.includes("black") || color.includes("white") && element !== poppedElement) {
+        element.style.backgroundColor = '#BBCC43';
+        clickedElement.push(element); 
+    }
+}
+
+function removeClickedEl(elements) {
+    if(elements.length > 0) {
+        elements[0].removeAttribute("style");
+    }
+    return elements.pop();
+}
+
+function removePawnEl(pawnElements) {
+    if(pawnElements.length > 0) {
+        document.querySelector(`#${pawnElements[0]} .dot`)?.remove();
+        document.querySelector(`#${pawnElements[1]} .dot`)?.remove();
+    }
 }
 
 function addDot(targetElement) {
