@@ -3,6 +3,7 @@ const allSquares = document.getElementsByClassName("square");
 const clickedElements = [];
 const pawnElements = [];
 const prevSquare = [];
+
 for(const i of allSquares) {
     i.addEventListener("click", function() {
         if(clickedElements.length > 0) {
@@ -21,13 +22,12 @@ for(const i of allSquares) {
             innerHTMLOfEl.includes("white")) && i !== poppedElement) {
                 i.style.backgroundColor = '#BBCC43';
                 clickedElements.push(i);
-        } else {
-            movePawn(idOfElement, prevSquare, pawnElements);
-        }
+        } 
+        movePawn(idOfElement, prevSquare, pawnElements);
         for(const img of images) {
             if(img.src.includes("pawn")) {
                 console.log(idOfElement, "Pawn!");
-                pawnMoves(idOfElement, pawnElements);            
+                pawnMoves(idOfElement, pawnElements, clickedElements);            
             } else {
                 pawnElements.pop();
                 pawnElements.pop();
@@ -44,8 +44,8 @@ function addDot(targetElement) {
     targetElement.appendChild(span);
 }
 
-function pawnMoves(elementId, pawnElements) {
-    console.log(pawnElements.length, "pawn Element length");
+function pawnMoves(elementId, pawnElements, clickedElements) {
+    console.log(clickedElements.length, "pawn Element length");
     pawn = document.getElementById(elementId);
 
     console.log(pawn.innerHTML);
@@ -60,16 +60,16 @@ function pawnMoves(elementId, pawnElements) {
         moveOne = "3";
         moveTwo = "4";
     } else {
-        if(pawn.innerHTML.includes("black")) {
-            moveOne = (parseInt("rank") - 1).toString();
-            const onlyMove = document.getElementById(file + moveOne);
-            addDot(onlyMove);
-            pawnElements.push(onlyMove.id);
-        } else {
-            moveOne = (parseInt("rank") + 1).toString();
-            const onlyMove = document.getElementById(file + moveOne);
-            addDot(onlyMove);
-            pawnElements.push(onlyMove.id);
+        if(clickedElements.length > 0) {
+            console.log("Hi!");
+            if(pawn.innerHTML.includes("black")) {
+                moveOne = (parseInt(rank) + 1).toString();
+                initPawn(file, moveOne);
+            } else {
+                moveOne = (parseInt(rank) - 1).toString();
+                initPawn(file, moveOne);
+            }
+            return;
         }
     }
     const lastElement = pawnElements.pop();
@@ -82,6 +82,13 @@ function pawnMoves(elementId, pawnElements) {
         pawnElements.push(firstMove.id, secondMove.id);
     }
 };
+
+function initPawn(file, move) {
+    const onlyMove = document.getElementById(file + move);
+    console.log(file + move);
+    addDot(onlyMove);
+    pawnElements.push(onlyMove.id);
+}
 
 function movePawn(idOfElement, prevSquare, pawnElements) {
     if(pawnElements.includes(idOfElement)) {
