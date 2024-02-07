@@ -3,6 +3,7 @@ const allSquares = document.getElementsByClassName("square");
 const clickedElements = [];
 const pawnElements = [];
 const prevSquare = [];
+const capturedElements = [];
 
 for(const i of allSquares) {
     i.addEventListener("click", function() {
@@ -23,7 +24,7 @@ for(const i of allSquares) {
         movePawn(idOfElement, prevSquare, pawnElements);
         
         //adding highlights to possible pawn moves if pawn is clicked
-        pawnClick(images, idOfElement, pawnElements, clickedElements);
+        pawnClick(images, idOfElement, pawnElements, clickedElements, capturedElements);
 
         //Chaning the prev square to curr square popping and pushing
         prevSquare.pop();
@@ -31,9 +32,27 @@ for(const i of allSquares) {
     });
 }
 
-function pawnClick(images, id, pawnElements, clickedElements) {
+function addcaptureElement(id, pawnElements, clickedElements, capturedElements) {
+    let pawn = document.getElementById(id);
+    let nextrank = (parseInt(id[1]) + 1).toString();
+    let nextfile = String.fromCharCode(id[0].charCodeAt(0) + 1);
+    let secondPawnId = nextfile + nextrank; 
+    let secondPawn = document.getElementById(secondPawnId);
+
+    if (secondPawn) {
+        let innerHTMLofPawn = secondPawn.innerHTML;
+        if (pawn && pawn.innerHTML.includes("black") && innerHTMLofPawn.includes("white")) {
+            capturedElements.push(secondPawnId);
+            console.log(capturedElements.length);
+        } 
+    }
+}
+
+
+function pawnClick(images, id, pawnElements, clickedElements, capturedElements) {
     for(const img of images) {
         if(img.src.includes("pawn")) {
+            addcaptureElement(id, pawnElements, clickedElements, capturedElements);
             pawnMoves(id, pawnElements, clickedElements);            
         } else {
             pawnElements.pop();
@@ -70,10 +89,8 @@ function addDot(targetElement) {
 }
 
 function pawnMoves(elementId, pawnElements, clickedElements) {
-    console.log(clickedElements.length, "pawn Element length");
     pawn = document.getElementById(elementId);
 
-    console.log(pawn.innerHTML);
     const file = elementId[0];
     const rank = elementId[1];
     let moveOne, moveTwo;
@@ -86,7 +103,6 @@ function pawnMoves(elementId, pawnElements, clickedElements) {
         moveTwo = "4";
     } else {
         if(clickedElements.length > 0) {
-            console.log("Hi!");
             if(pawn.innerHTML.includes("black")) {
                 moveOne = (parseInt(rank) + 1).toString();
                 initPawn(file, moveOne);
@@ -110,7 +126,6 @@ function pawnMoves(elementId, pawnElements, clickedElements) {
 
 function initPawn(file, move) {
     const onlyMove = document.getElementById(file + move);
-    console.log(file + move);
     addDot(onlyMove);
     pawnElements.push(onlyMove.id);
 }
@@ -120,7 +135,6 @@ function movePawn(idOfElement, prevSquare, pawnElements) {
         const initialSquare = document.getElementById(prevSquare[0]);
         const targetSquare = document.getElementById(idOfElement);
         const pawn = initialSquare.querySelector("img");
-        console.log("This is working?")
         if(pawn) {
             targetSquare.appendChild(pawn);
         }
