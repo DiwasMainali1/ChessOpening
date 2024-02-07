@@ -11,7 +11,7 @@ for(const i of allSquares) {
         const idOfElement = i.getAttribute("id");
         const innerHTMLOfEl = i.innerHTML;
         const images = this.getElementsByTagName("img");
-
+        
         //Removing highlighted squares if there is one
         const poppedElement = removeClickedEl(clickedElements);
         //Removing highlighted possible pawn squares
@@ -22,7 +22,9 @@ for(const i of allSquares) {
         
         //moving the pawn if the selected rank and file is correct
         movePawn(idOfElement, prevSquare, pawnElements);
-        
+        console.log("El id ", idOfElement, "\nCid ", capturedElements[0]);
+        console.log(clickedElements.length);
+        capturePawn(idOfElement, prevSquare, capturedElements, pawnElements);
         //adding highlights to possible pawn moves if pawn is clicked
         pawnClick(images, idOfElement, pawnElements, clickedElements, capturedElements);
 
@@ -32,19 +34,40 @@ for(const i of allSquares) {
     });
 }
 
+function pushcaptureElement(id, capturedElements) {
+    if (!capturedElements.includes(id)) {
+        capturedElements.push(id);
+    }
+}
+
 function addcaptureElement(id, pawnElements, clickedElements, capturedElements) {
     let pawn = document.getElementById(id);
-    let nextrank = (parseInt(id[1]) + 1).toString();
-    let nextfile = String.fromCharCode(id[0].charCodeAt(0) + 1);
-    let secondPawnId = nextfile + nextrank; 
+    let blknextRank = (parseInt(id[1]) + 1).toString();
+    let blknextfile_1 = String.fromCharCode(id[0].charCodeAt(0) + 1);
+    let blknextfile_2 = String.fromCharCode(id[0].charCodeAt(0) - 1);
+
+    let firstPawnId = blknextfile_1 + blknextRank;
+    let secondPawnId = blknextfile_2 + blknextRank;
+    
+    let firstPawn = document.getElementById(firstPawnId);
     let secondPawn = document.getElementById(secondPawnId);
 
     if (secondPawn) {
         let innerHTMLofPawn = secondPawn.innerHTML;
         if (pawn && pawn.innerHTML.includes("black") && innerHTMLofPawn.includes("white")) {
-            capturedElements.push(secondPawnId);
-            console.log(capturedElements.length);
+            pushcaptureElement(secondPawnId, capturedElements);
         } 
+    } 
+    if (firstPawn) {
+        let innerHTMLofPawn = firstPawn.innerHTML;
+        if (pawn && pawn.innerHTML.includes("black") && innerHTMLofPawn.includes("white")) {
+            pushcaptureElement(firstPawnId, capturedElements);
+            console.log(capturedElements.length);
+        }   
+    } else {
+        while(capturedElements.length > 0) {
+            capturedElements.pop();
+        }
     }
 }
 
@@ -62,7 +85,7 @@ function pawnClick(images, id, pawnElements, clickedElements, capturedElements) 
 }
 
 function setHighlightColor(element, clickedElement, color, poppedElement) {
-    if(color.includes("black") || color.includes("white") && element !== poppedElement) {
+    if((color.includes("black") || color.includes("white")) && element !== poppedElement) {
         element.style.backgroundColor = '#BBCC43';
         clickedElement.push(element); 
     }
@@ -136,6 +159,20 @@ function movePawn(idOfElement, prevSquare, pawnElements) {
         const targetSquare = document.getElementById(idOfElement);
         const pawn = initialSquare.querySelector("img");
         if(pawn) {
+            targetSquare.appendChild(pawn);
+        }
+    }
+}
+
+function capturePawn(id, prevSquare, capturedElements, pawnElements) {
+    if(capturedElements.includes(id)) {
+        console.log("Accessed!");
+        const initialSquare = document.getElementById(prevSquare[0]);
+        const targetSquare = document.getElementById(id);
+        const pawn = initialSquare.querySelector("img");
+        const capturedPawn = targetSquare.querySelector("img");
+        if(pawn && capturedPawn) {
+            targetSquare.removeChild(capturedPawn);
             targetSquare.appendChild(pawn);
         }
     }
