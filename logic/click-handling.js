@@ -11,6 +11,7 @@ for(const i of allSquares) {
         const idOfElement = i.getAttribute("id");
         const innerHTMLOfEl = i.innerHTML;
         const images = this.getElementsByTagName("img");
+
         
         //Removing highlighted squares if there is one
         const poppedElement = removeClickedEl(clickedElements);
@@ -18,12 +19,9 @@ for(const i of allSquares) {
         removePawnEl(pawnElements);
 
         //If pieces are selected then adding highlight
-        setHighlightColor(i, clickedElements, innerHTMLOfEl, poppedElement);
-        
+        setHighlightColor(i, clickedElements, innerHTMLOfEl, poppedElement);  
         //moving the pawn if the selected rank and file is correct
         movePawn(idOfElement, prevSquare, pawnElements);
-        console.log("El id ", idOfElement, "\nCid ", capturedElements[0]);
-        console.log(clickedElements.length);
         capturePawn(idOfElement, prevSquare, capturedElements, pawnElements);
         //adding highlights to possible pawn moves if pawn is clicked
         pawnClick(images, idOfElement, pawnElements, clickedElements, capturedElements);
@@ -41,6 +39,7 @@ function pushcaptureElement(id, capturedElements) {
 }
 
 function addcaptureElement(id, pawnElements, clickedElements, capturedElements) {
+
     let pawn = document.getElementById(id);
     let blknextRank = (parseInt(id[1]) + 1).toString();
     let blknextfile_1 = String.fromCharCode(id[0].charCodeAt(0) + 1);
@@ -62,15 +61,10 @@ function addcaptureElement(id, pawnElements, clickedElements, capturedElements) 
         let innerHTMLofPawn = firstPawn.innerHTML;
         if (pawn && pawn.innerHTML.includes("black") && innerHTMLofPawn.includes("white")) {
             pushcaptureElement(firstPawnId, capturedElements);
-            console.log(capturedElements.length);
         }   
-    } else {
-        while(capturedElements.length > 0) {
-            capturedElements.pop();
-        }
     }
-}
 
+}
 
 function pawnClick(images, id, pawnElements, clickedElements, capturedElements) {
     for(const img of images) {
@@ -165,7 +159,7 @@ function movePawn(idOfElement, prevSquare, pawnElements) {
 }
 
 function capturePawn(id, prevSquare, capturedElements, pawnElements) {
-    if(capturedElements.includes(id)) {
+    if(capturedElements.includes(id) && clickedElements.length === 1) {
         console.log("Accessed!");
         const initialSquare = document.getElementById(prevSquare[0]);
         const targetSquare = document.getElementById(id);
@@ -174,6 +168,7 @@ function capturePawn(id, prevSquare, capturedElements, pawnElements) {
         if(pawn && capturedPawn) {
             targetSquare.removeChild(capturedPawn);
             targetSquare.appendChild(pawn);
+            capturedElements.pop();
         }
     }
 }
